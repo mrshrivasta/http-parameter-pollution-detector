@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}HTTP Parameter Pollution Detector — Real HTTP Response Caching Header Auditor{% endblock %}</title>
+
+<!-- SEO -->
+<meta name="description" content="{% block meta_description %}HTTP Parameter Pollution Detector is an open-source security tool that issues a single, passive REAL HTTP GET request to a URL you authorize, appending one harmless duplicate marker query parameter, and inspects the actual response for reflection patterns that reveal how the application resolves duplicate parameters — a real, no-mock-data HPP reconnaissance technique. Free CLI and web app by Karanam Shrivasta.{% endblock %}">
+<meta name="keywords" content="http parameter pollution detector, HPP scanner, duplicate query parameter, parameter pollution reflected XSS, last value wins, first value wins, open redirect HPP, web security scanner, Karanam Shrivasta security tools">
+<meta name="author" content="Karanam Shrivasta">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/mrshrivasta">
+
+<!-- Open Graph / social -->
+<meta property="og:title" content="HTTP Parameter Pollution Detector — by Karanam Shrivasta">
+<meta property="og:description" content="Real, no-mock-data, passive audit that appends a duplicate marker parameter to a URL you authorize and inspects how the response reflects it, revealing real HTTP Parameter Pollution behavior.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HTTP Parameter Pollution Detector">
+
+<!-- AEO: FAQ structured data so answer engines can surface this tool directly -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does the HTTP Parameter Pollution Detector check?",
+      "acceptedAnswer": {"@type": "Answer", "text": "It issues a single, passive real HTTP GET request that appends one harmless, uniquely-marked duplicate query parameter to the URL you authorize, then inspects the real response body, redirect Location header, and Set-Cookie header for reflection of that marker, revealing whether the application uses first-value-wins, last-value-wins, or array-style handling for duplicate parameters — never sample data, and never an exploit payload."}
+    },
+    {
+      "@type": "Question",
+      "name": "Who should use the HTTP Parameter Pollution Detector?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Web developers and security engineers auditing how their applications resolve duplicate query parameters on sites and applications they own or are explicitly authorized to test."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is the HTTP Parameter Pollution Detector a replacement for a professional security audit?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No. It is an educational and productivity aid only. It does not replace a certified penetration test, compliance audit, or professional security assessment. See the disclaimer in the README."}
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="disclaimer-banner">
+  ⚠️ <strong>SECURITY &amp; LEGAL DISCLAIMER:</strong> This tool sends REAL HTTP requests to whatever URL you enter. Use it <strong>ONLY</strong>
+  against URLs/systems you own or are explicitly, contractually authorized to test — testing third-party sites without permission may violate
+  computer-crime laws and terms of service. Provided <strong>"AS IS", WITHOUT WARRANTY OF ANY KIND</strong>. Not a substitute for a professional
+  security audit. The author, <strong>Karanam Shrivasta</strong>, accepts <strong>NO LIABILITY</strong> for any damage, data loss, downtime, legal
+  consequences, or misuse arising from this software. By using this tool you accept full responsibility for your actions. See the README for the
+  complete disclaimer.
+</div>
+
+{% if current_user.is_authenticated %}
+<nav class="navbar">
+  <div class="nav-brand">🔐 HTTP Parameter Pollution Detector</div>
+  <div class="nav-links">
+    <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
+    <a href="{{ url_for('logs.index') }}">Logs</a>
+    <a href="{{ url_for('alerts.index') }}">Alerts</a>
+    <a href="{{ url_for('incidents.index') }}">Incidents</a>
+    <a href="{{ url_for('analytics.index') }}">Analytics</a>
+    <a href="{{ url_for('reports.index') }}">Reports</a>
+    <a href="{{ url_for('settings.index') }}">Settings</a>
+    <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
+  </div>
+</nav>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="watermark-footer">
+  <p>
+    HTTP Parameter Pollution Detector &copy; {{ 2026 }} — Developed by <strong>Karanam Shrivasta</strong>
+    &middot; <a href="{{ github_url }}" target="_blank" rel="noopener">GitHub</a>
+    &middot; <a href="{{ linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>
+  </p>
+  <p class="footer-disclaimer">For authorized security auditing and educational use only. No warranty. Use at your own risk.</p>
+</footer>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
